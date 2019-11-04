@@ -8,7 +8,7 @@ body {background-color: coral;}
     display: block;
     height: 20px;
     text-align: center;
-    transition: width .3s;
+    transition: width .2s;
     width: 0;
   }
   
