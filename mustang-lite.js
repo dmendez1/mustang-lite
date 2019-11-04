@@ -1,13 +1,13 @@
 var contactURLArray = [];
 var contactArray = [];
 var loadingContact = 0;
+var contacts = [];
 
 function initApplication() {
-    console.log('Mustang Lite - Starting!'); 
+    console.log('Mustang Lite v1 - Starting!'); 
 }
 
 function loadIndex() {
-    
     var indexRequest = new XMLHttpRequest();
     indexRequest.open('GET', 'https://mustang-index.azurewebsites.net/index.json');
     indexRequest.onload = function() {
@@ -23,9 +23,10 @@ function loadIndex() {
 }
 
 function loadContacts() {
-    
     contactArray.length = 0;
     loadingContact = 0;
+
+
     if (contactURLArray.length > loadingContact) {
         loadNextContact(contactURLArray[loadingContact]);
     }
@@ -36,16 +37,14 @@ function loadNextContact(URL) {
     contactRequest = new XMLHttpRequest();
     contactRequest.open('GET', URL);
     contactRequest.onload = function() {
-        console.log(contactRequest.responseText);
+        for (i = 0; i < contactURLArray.length; i++) {
+            console.log(contactRequest.responseText);
         var contact;
         contact = JSON.parse(contactRequest.responseText);
         console.log("Contact: " + contact.firstName);
         contactArray.push(contact);
         document.getElementById("contactsID").innerHTML = JSON.stringify(contactArray);
 
-        loadingContact++;
-        if (contactURLArray.length > loadingContact) {
-            loadNextContact(contactURLArray[loadingContact]);
         }
     }
 
