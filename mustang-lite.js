@@ -7,8 +7,9 @@ function initApplication() {
 }
 
 function loadIndex() {
+    
     var indexRequest = new XMLHttpRequest();
-    indexRequest.open('GET', 'https://mustang-dex.azurewebsites.net/index.json');
+    indexRequest.open('GET', 'https://mustang-index.azurewebsites.net/index.json');
     indexRequest.onload = function() {
         console.log("Index JSON:" + indexRequest.responseText);
         document.getElementById("indexID").innerHTML = indexRequest.responseText;
@@ -22,9 +23,9 @@ function loadIndex() {
 }
 
 function loadContacts() {
+    
     contactArray.length = 0;
     loadingContact = 0;
-
     if (contactURLArray.length > loadingContact) {
         loadNextContact(contactURLArray[loadingContact]);
     }
@@ -55,6 +56,46 @@ function logContacts() {
     console.log(contactArray);
 }
 
+var progressBar = document.getElementById("progress"),
+  loadBtn = document.getElementById("button"),
+  display = document.getElementById("display");
 
+function upload(data) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "https://zinoui.com/demo/progress-bar/upload.php", true);
+  if (xhr.upload) {
+    xhr.upload.onprogress = function(e) {
+      if (e.lengthComputable) {
+        progressBar.max = e.total;
+        progressBar.value = e.loaded;
+        display.innerText = Math.floor((e.loaded / e.total) * 100) + '%';
+      }
+    }
+    xhr.upload.onloadstart = function(e) {
+      progressBar.value = 0;
+      display.innerText = '0%';
+    }
+    xhr.upload.onloadend = function(e) {
+      progressBar.value = e.loaded;
+      loadBtn.disabled = false;
+      loadBtn.innerHTML = 'Load Index';
+    }
+  }
+  xhr.send(data);
+}
 
+function buildFormData() {
+  var fd = new FormData();
 
+  for (var i = 0; i < 3000; i += 1) {
+    fd.append('data[]', Math.floor(Math.random() * 999999));
+  }
+
+  return fd;
+}
+
+loadBtn.addEventListener("click", function(e) {
+  this.disabled = true;
+  this.innerHTML = "Uploading...";
+  upload(buildFormData());
+});
